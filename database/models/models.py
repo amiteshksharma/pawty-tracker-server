@@ -3,7 +3,7 @@ from database.db import db
 import time
 import uuid
 
-from database.enums.enums import PetTypes, UserTypes
+from database.enums.enums import MessageType, PetTypes, UserTypes
 
 """
 The user table that will contain all information related to the user
@@ -14,8 +14,8 @@ The user table that will contain all information related to the user
 """
 class User(db.Model):
     uid = db.Column(db.String(30), primary_key=True, nullable=False)
+    username = db.Column(db.String(30), nullable=False)
     email = db.Column(db.String(64), nullable=False)
-    username = db.Column(db.String(30), primary_key=True, nullable=False)
     created = db.Column(db.Integer, nullable=False)
 
     def __init__(self, uid, username, email):
@@ -35,7 +35,7 @@ The groups table that will contain all information related to a group
 """
 class Groups(db.Model):
     id = db.Column(db.String(64), primary_key=True, nullable=False)
-    name = db.Column(db.String(64), primary_key=True, nullable=False)
+    name = db.Column(db.String(64), nullable=False)
     user = db.Column(db.String(30), ForeignKey("user.uid"))
     user_type = db.Column(Enum(UserTypes), nullable=False)
     pet_type = db.Column(Enum(PetTypes), nullable=False)
@@ -47,4 +47,29 @@ class Groups(db.Model):
         self.user = user
         self.user_type = user_type
         self.pet_type = pet_type
+        self.created = time.time()
+
+"""
+The groupDetails table that will contain all activities created for a group
+  - id: primary key, non-nullable unique id
+  - created_by: primary key, id of user who creates activity
+  - group_id: foreign key, id of group activity is being added to
+  - message_type: non-nullable, Enum, determines the activity being created
+  - comment: non-nullable, comment about the activity being created
+  - created: non-nullable, time when group is created
+"""
+class GroupDetails(db.Model):
+    message_id = db.Column(db.String(64), primary_key=True, nullable=False)
+    created_by = db.Column(db.String(30), ForeignKey("user.uid"))
+    group_id = db.Column(db.String(64), ForeignKey("groups.id"))
+    message_type = db.Column(Enum(MessageType), nullable=False)
+    comment = db.Column(db.String(150), nullable=False)
+    created = db.Column(db.Integer, nullable=False)
+
+    def __init__(self, group_id, message_type, comment, created_by):
+        self.message_id = uuid.uuid4().hex
+        self.group_id = group_id
+        self.message_type = message_type
+        self.comment = comment
+        self.created_by = created_by
         self.created = time.time()

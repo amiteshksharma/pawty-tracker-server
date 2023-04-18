@@ -13,5 +13,7 @@ db = SQLAlchemy(app)
 
 from database.routes.users import users
 from database.routes.groups import groups
+from database.routes.details import details
 app.register_blueprint(users)
 app.register_blueprint(groups)
+app.register_blueprint(details)

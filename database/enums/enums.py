@@ -12,3 +12,11 @@ class UserTypes(enum.Enum):
     member = 'member'
     admin = 'admin'
     owner = 'owner'
+
+class MessageType(enum.Enum):
+    bathroom = 'bathroom'
+    walk = 'walk'
+    breakfast = 'breakfast'
+    dinner = 'dinner'
+    water = 'water'
+    treat = 'treat'
