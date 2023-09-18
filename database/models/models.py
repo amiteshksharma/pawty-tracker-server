@@ -50,26 +50,26 @@ class Groups(db.Model):
         self.created = time.time()
 
 """
-The groupDetails table that will contain all activities created for a group
+The GroupDetails table that will contain all activities created for a group
   - id: primary key, non-nullable unique id
   - created_by: primary key, id of user who creates activity
   - group_id: foreign key, id of group activity is being added to
-  - message_type: non-nullable, Enum, determines the activity being created
-  - comment: non-nullable, comment about the activity being created
+  - title: non-nullable, the summary of the event
+  - description: non-nullable, description of the event
   - created: non-nullable, time when group is created
 """
 class GroupDetails(db.Model):
-    message_id = db.Column(db.String(64), primary_key=True, nullable=False)
+    event_id = db.Column(db.String(64), primary_key=True, nullable=False)
     created_by = db.Column(db.String(30), ForeignKey("user.uid"))
     group_id = db.Column(db.String(64), ForeignKey("groups.id"))
-    message_type = db.Column(Enum(MessageType), nullable=False)
-    comment = db.Column(db.String(150), nullable=False)
+    title = db.Column(db.String(32), nullable=False)
+    description = db.Column(db.String(128), nullable=False)
     created = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, group_id, message_type, comment, created_by):
-        self.message_id = uuid.uuid4().hex
+    def __init__(self, group_id, title, description, created_by):
+        self.event_id = uuid.uuid4().hex
         self.group_id = group_id
-        self.message_type = message_type
-        self.comment = comment
+        self.title = title
+        self.description = description
         self.created_by = created_by
         self.created = time.time()
